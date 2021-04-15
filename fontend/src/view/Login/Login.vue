@@ -10,7 +10,7 @@
           <div class="form_title">选课管理系统</div>
 <!--          用户名-->
           <el-form-item prop="username">
-            <el-input  v-model="loginForm.username" placeholder="用户名" prefix-icon="el-icon-user"></el-input>
+            <el-input  v-model="loginForm.username" placeholder="用户名" prefix-icon="el-icon-user" clearable></el-input>
           </el-form-item>
 <!--        密码-->
         <el-form-item prop="password">

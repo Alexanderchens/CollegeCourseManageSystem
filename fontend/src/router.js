@@ -1,13 +1,19 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from './view/Login/Login'
-import Home from './view/student/StuHome'
+import StuHome from './view/student/StuHome'
 import Message from './view/student/eduMessage/Message'
 import NotFound from './view/page404'
 import Table from './view/student/class/table'
 import Query from './view/student/class/query'
 import Select from './view/student/select/select'
 import Classroom from './view/student/classroom/classroom'
+import AdminHome from './view/admin/adminHome'
+import quillEditor from 'vue-quill-editor'
+import Notification from './view/admin/note/notification'
+import Verify from './view/admin/verify/verify'
+import Administration from './view/admin/administration/administration'
+import ConfirmForm from './view/admin/verify/confirm'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -22,24 +28,44 @@ const router = new VueRouter({
     },
     {
       path: '/student',
-      component: Home,
-      redirect: '/message',
+      component: StuHome,
+      redirect: '/student/message',
       children: [
-        { path: '/message', component: Message },
-        { path: '/table', component: Table },
-        { path: '/query', component: Query },
-        { path: '/select', component: Select },
-        { path: '/classroom', component: Classroom }
+        { path: 'message', component: Message },
+        { path: 'table', component: Table },
+        { path: 'query', component: Query },
+        { path: 'select', component: Select },
+        { path: 'classroom', component: Classroom }
       ]
+    },
+    {
+      path: '/admin',
+      mode: 'history',
+      component: AdminHome,
+      redirect: '/admin/notification',
+      children: [
+        { path: 'notification', component: Notification },
+        {
+          path: 'verify',
+          component: Verify
+        },
+        { path: 'edit', component: Administration }
+      ]
+    },
+    {
+      path: '/admin/application/:id',
+      component: ConfirmForm
     },
     {
       path: '/404',
       component: NotFound,
       name: '404',
-      hidden: true,
-      children: []
+      hidden: true
     }
-  ]
+  ],
+  components: {
+    quillEditor
+  }
 })
 
 // // 挂载路由导航

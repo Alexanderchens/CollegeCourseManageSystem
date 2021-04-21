@@ -1,10 +1,10 @@
 <template>
   <el-container class="home-container">
-<!--    头部-->
+    <!--    头部-->
     <el-header>
       <div>
         <img src="../../assets/logo.png" alt="" class="logo_pic">
-        <span>选课管理系统-学生端</span>
+        <span>选课管理系统-教务员端</span>
       </div>
       <el-dropdown>
         <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
@@ -15,10 +15,10 @@
         </el-dropdown-menu>
       </el-dropdown>
     </el-header>
-<!--    主体-->
+    <!--    主体-->
     <el-container>
-<!--      Aside-->
-      <el-aside width="200px">
+      <!--      Aside-->
+      <el-aside width="230px">
         <el-menu
           :default-active="$route.path"
           class="el-menu-vertical-aside"
@@ -35,37 +35,37 @@
               <span>教务信息</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item :index="'/student/message'"><i class="el-icon-chat-line-square"></i>消息</el-menu-item>
+              <el-menu-item :index="'/admin/notification'"><i class="el-icon-edit"></i>编辑通知</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
             <template slot="title">
               <i class="el-icon-collection"></i>
-              <span>课程查询</span>
+              <span>课程</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item :index="'/student/table'"> <i class="el-icon-s-grid"></i>学生课表</el-menu-item>
-            </el-menu-item-group>
-            <el-menu-item-group>
-              <el-menu-item :index="'/student/query'"><i class="el-icon-info"></i>选课情况查询</el-menu-item>
+              <el-badge :value="200" :max="99" class="item">
+                <el-menu-item :index="'/admin/verify'"> <i class="el-icon-s-check"></i>课程审核</el-menu-item>
+              </el-badge>
             </el-menu-item-group>
           </el-submenu>
-          <el-menu-item :index="'/student/select'">
-            <i class="el-icon-document"></i>
-            <span slot="title">学生选课</span>
-          </el-menu-item>
-          <el-menu-item :index="'/student/classroom'">
-            <i class="el-icon-question"></i>
-            <span slot="title">查询空教室</span>
-          </el-menu-item>
+          <el-submenu index="3">
+            <template slot="title">
+              <i class="el-icon-document"></i>
+              <span>编辑发布课程</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item :index="'/admin/edit'"> <i class="el-icon-chat-line-round"></i>查看/管理信息</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-container>
-<!--        Main-->
+        <!--        Main-->
         <el-main>
           <router-view></router-view>
         </el-main>
-<!--        Footer-->
+        <!--        Footer-->
         <el-footer>
           <div>
             <p class="comment">Copyright © 2021 数据库实训小组.</p>
@@ -78,6 +78,7 @@
 
 <script>
 export default {
+  name: 'adminHome',
   data () {
     return {
       isCollapse: false
@@ -87,11 +88,11 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.el-header{
-  background-color: #f1f1f1;
-  display: flex;
-  justify-content: space-between;
-}
+  .el-header{
+    background-color: #f1f1f1;
+    display: flex;
+    justify-content: space-between;
+  }
 
   .el-aside{
     background-color: #03152a;
@@ -124,8 +125,8 @@ export default {
     border: none;
   }
 
-  .el-menu-vertical-aside:not(.el-menu--collapse) {
-    width: 200px;
+  .el-menu-vertical-aside {
+    width: 230px;
     min-height: 400px;
   }
   .comment{

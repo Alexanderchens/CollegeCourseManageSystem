@@ -70,7 +70,13 @@ export default {
         this.$message.success('登录成功')
         // window.sessionStorage.setItem('token', res.data.token)
         // 跳转
-        this.$router.push('/student')
+        if (this.loginForm.userType === '1') {
+          this.$router.push('/student')
+        } else if (this.loginForm.userType === '2') {
+          this.$router.push('/student')
+        } else {
+          this.$router.push('/admin')
+        }
       })
     }
   }

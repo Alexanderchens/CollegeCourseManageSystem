@@ -2,7 +2,6 @@
   <div class="class-table">
     <div class="table-wrapper">
       <div class="tabel-container">
-
         <table>
           <thead>
           <tr>

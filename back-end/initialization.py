@@ -2,26 +2,39 @@
 # 检测系统中是否有数据库
 # 若无则调用‘initialization_commands.txt’中的预置sql命令进行数据库初始建库
 
-# 逐行读取，然后excute
-import mysql.connector
+# 逐行读取，然后execute
+import pymysql as pms
 
 
-def init(mycursor):
-    mycursor.execute(".\initial.sql")
+def init(database, file):
+    with open(file, "r") as f:
+        data = f.read()
+        lines = data.splitlines()
+        sql_data = ''
+        # 将--注释开头的全部过滤，将空白行过滤
+        for line in lines:
+            if len(line) == 0:
+                continue
+            elif line.startswith("--"):
+                continue
+            else:
+                sql_data += line
+        sql_list = sql_data.split(';')[:-1]
+        sql_list = [x.replace('\n', ' ') if '\n' in x else x for x in sql_list]
+    mycs=db.cursor()
+    for item in sql_list:
+        mycs.execute(item)
 
 
-mydb = mysql.connector.connect(
-    host="localhost",
-    user="root",
-    passwd="root",
-)
-
-mycursor = mydb.cursor()
-
-mycursor.execute("SHOW DATABASES")
+db = pms.connect("localhost", "root", "root")
+cs = db.cursor()
+cs.execute("SHOW DATABASES")
 flag = True
-for x in mycursor:
-    if(x == "CollegeCourseManageSystem"):
+for y in cs:
+    if y == "CollegeCourseManageSystem":
         flag = False
+        break
 if flag:
-    init(mycursor)
+    init(db, "initialization.sql")
+
+db.close()

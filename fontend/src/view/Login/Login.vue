@@ -43,7 +43,17 @@ export default {
       },
       // 校验
       loginFormRules: {
-        username: [{ required: true, message: '请输入用户名称', trigger: 'blur' }
+        username: [
+          {
+            required: true,
+            message: '请输入用户名称',
+            trigger: 'blur'
+          },
+          {
+            pattern: /^[0-9.-]+$/,
+            message: '用户名格式错误',
+            trigger: 'blur'
+          }
         ],
         password: [{ required: true, message: '请输入用户名称', trigger: 'blur' }
         ]

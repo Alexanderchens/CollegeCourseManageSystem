@@ -7,8 +7,7 @@ import mysql.connector
 
 
 def init(mycursor):
-    for line in open("initialization_commands.txt"):
-        mycursor.excute(line)
+    mycursor.execute(".\initial.sql")
 
 
 mydb = mysql.connector.connect(

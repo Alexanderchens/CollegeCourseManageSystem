@@ -6,6 +6,7 @@
 import pymysql as pms
 
 
+# 数据库初始化
 def init(database, file):
     with open(file, "r") as f:
         data = f.read()
@@ -21,20 +22,24 @@ def init(database, file):
                 sql_data += line
         sql_list = sql_data.split(';')[:-1]
         sql_list = [x.replace('\n', ' ') if '\n' in x else x for x in sql_list]
-    mycs=db.cursor()
+    mycs = db.cursor()
     for item in sql_list:
         mycs.execute(item)
 
 
+# 初始化调试示例
 db = pms.connect("localhost", "root", "root")
 cs = db.cursor()
 cs.execute("SHOW DATABASES")
+data = cs.fetchall()
+print(data)
+
 flag = True
-for y in cs:
-    if y == "CollegeCourseManageSystem":
+for row in data:
+    if row[0] == "collegecoursemanagesystem":
         flag = False
         break
 if flag:
-    init(db, "initialization.sql")
+    init(db,"initialization.sql")
 
 db.close()

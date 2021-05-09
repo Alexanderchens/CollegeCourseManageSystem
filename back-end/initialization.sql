@@ -3,8 +3,9 @@ CREATE DATABASE CollegeCourseManageSystem;
 use CollegeCourseManageSystem;
 
 CREATE TABLE student(
-s_id varchar(10),
+s_id varchar(20),
 name varchar(20),
+password varchar(50),
 primary key (s_id)
 );
 
@@ -23,8 +24,9 @@ primary key (dept_name)
 );
 
 CREATE TABLE instructor(
-i_id varchar(10),
+i_id varchar(20),
 name varchar(20),
+password varchar(50),
 primary key (i_id)
 );
 
@@ -42,11 +44,26 @@ credits numeric(2,0) check(credits>0),
 type varchar(20),
 lesson int,
 dept_name varchar(20),
-primary key (c_id)
+primary key (c_id),
 foreign key (dept_name) references department(dept_name) on delete set null
 );
 
 CREATE TABLE teaches(
 year int,
-semester varchar(10),
+semester varchar(10)
 );
+
+CREATE TABLE time_slot(
+weeknumber numeric(2,0),
+weekday numeric(1,0),
+time_slot_number numeric(2,0),
+primary key (weeknumber, weekday, time_slot_number)
+);
+
+CREATE TABLE system_manager(
+m_id varchar(20),
+name varchar(20),
+password varchar(50),
+primary key (m_id)
+);
+

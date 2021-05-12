@@ -48,10 +48,17 @@ primary key (c_id),
 foreign key (dept_name) references department(dept_name) on delete set null
 );
 
-CREATE TABLE teaches(
-year int,
-semester varchar(10)
-);
+drop table teaches;
+create table teaches
+	(i_id			varchar(5),
+	 c_id		varchar(8),
+	 semester		varchar(6),
+	 year			numeric(4,0),
+	 primary key (i_id, c_id, semester, year),
+	 foreign key (c_id) references course(c_id),
+	 foreign key (i_id) references instructor (i_id)
+		on delete cascade
+	);
 
 CREATE TABLE time_slot(
 weeknumber numeric(2,0),
@@ -67,11 +74,15 @@ password varchar(50),
 primary key (m_id)
 );
 
+# 未执行
 CREATE TABLE student_pick(
 s_id varchar(20),
-m_id varchar(20),
+c_id varchar(20),
 name varchar(20),
 password varchar(50),
-primary key (m_id)
+foreign key (s_id) references student(s_id),
+foreign key (c_id) references course(c_id),
+primary key (s_id,c_id)
 );
+
 

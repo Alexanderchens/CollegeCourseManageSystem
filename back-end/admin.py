@@ -58,3 +58,10 @@ def adminchange(tablename, colunmname, primarykey, primarykeyvalue, newdata):
     db.commit()
     mcs.close()
     db.close()
+
+
+# 管理员审核完成之后将课程信息插入数据库
+# 未完成
+def submitcourse(course_id, name, hour, credit, course_type, ins_id):
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+    mcs = db.cursor()

@@ -18,6 +18,7 @@ Vue.use(VueRouter)
 
 const router = new VueRouter({
   routes: [
+    // 登录
     {
       path: '/login',
       component: Login
@@ -26,6 +27,7 @@ const router = new VueRouter({
       path: '/',
       redirect: '/login'
     },
+    // 学生
     {
       path: '/student',
       component: StuHome,

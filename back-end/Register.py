@@ -32,11 +32,10 @@ def register(db, ids, password, name, user_class):
             return False
     mcs.execute(exe_str)
     db.commit()
+    db.close()
     return True
 
 
 # 调试示例
 dtb = pms.connect("localhost", "root", "root", "CollegeCourseManageSystem")
 register(dtb, '201930390029', 'cocoa', 'cc', 1)
-
-

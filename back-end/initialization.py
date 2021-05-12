@@ -41,5 +41,6 @@ for row in data:
         break
 if flag:
     init(db,"initialization.sql")
+    db.commit()
 
 db.close()

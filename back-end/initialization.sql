@@ -38,11 +38,11 @@ primary key (building,room_number)
 );
 
 CREATE TABLE course(
-c_id varchar(10),
+c_id varchar(20),
 course_name varchar(50),
 credits numeric(2,0) check(credits>0),
 type varchar(20),
-lesson int,
+hour int,
 dept_name varchar(20),
 primary key (c_id),
 foreign key (dept_name) references department(dept_name) on delete set null
@@ -61,6 +61,14 @@ primary key (weeknumber, weekday, time_slot_number)
 );
 
 CREATE TABLE system_manager(
+m_id varchar(20),
+name varchar(20),
+password varchar(50),
+primary key (m_id)
+);
+
+CREATE TABLE student_pick(
+s_id varchar(20),
 m_id varchar(20),
 name varchar(20),
 password varchar(50),

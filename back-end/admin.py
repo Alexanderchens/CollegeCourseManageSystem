@@ -16,7 +16,7 @@ def adminload(db, file):
 
 
 # 调试示例
-dtb = pms.connect("localhost", "root", "root", "CollegeCourseManageSystem")
+dtb = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
 adminload(dtb, "mytest.csv")
 
 

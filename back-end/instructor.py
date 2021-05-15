@@ -1,10 +1,13 @@
 import pymysql as pms
 from flask import Flask
 app = Flask(__name__)
+
+
 # 查课表
 def queryforcourse(i_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+
 
 # studentlist 学生id的列表
 @app.route('/teacherchoose/')

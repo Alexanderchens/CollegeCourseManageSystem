@@ -37,5 +37,5 @@ def register(db, ids, password, name, user_class):
 
 
 # 调试示例
-dtb = pms.connect("localhost", "root", "root", "CollegeCourseManageSystem")
-register(dtb, '201930390029', 'cocoa', 'cc', 1)
+# dtb = pms.connect("localhost", "root", "root", "CollegeCourseManageSystem")
+# register(dtb, '201930390029', 'cocoa', 'cc', 1)

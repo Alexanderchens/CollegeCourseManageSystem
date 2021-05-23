@@ -43,6 +43,7 @@ def adminpasswordchange(ids, newpassword, user_class):
     db.close()
 
 
+# 利用管理员权限进行全局范围的所有表象更改
 def adminchange(tablename, colunmname, primarykey, primarykeyvalue, newdata):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()

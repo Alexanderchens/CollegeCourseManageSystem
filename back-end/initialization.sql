@@ -50,10 +50,10 @@ foreign key (dept_name) references department(dept_name) on delete set null
 
 drop table teaches;
 create table teaches
-	(i_id			varchar(5),
-	 c_id		varchar(8),
-	 semester		varchar(6),
-	 year			numeric(4,0),
+	(i_id varchar(5),
+	 c_id varchar(8),
+	 semester varchar(6),
+	 year numeric(4,0),
 	 primary key (i_id, c_id, semester, year),
 	 foreign key (c_id) references course(c_id),
 	 foreign key (i_id) references instructor (i_id)
@@ -78,11 +78,21 @@ primary key (m_id)
 CREATE TABLE student_pick(
 s_id varchar(20),
 c_id varchar(20),
-name varchar(20),
-password varchar(50),
+year numeric(4,0),
+semester varchar(6),
 foreign key (s_id) references student(s_id),
 foreign key (c_id) references course(c_id),
-primary key (s_id,c_id)
+primary key (s_id,c_id,year,semester)
 );
 
 
+# 任课老师
+CREATE TABLE teacher_rel(
+i_id varchar(20),
+c_id varchar(20),
+year numeric(4,0),
+semester varchar(6),
+foreign key (s_id) references student(s_id),
+foreign key (c_id) references course(c_id),
+primary key (s_id,c_id,year,semester)
+);

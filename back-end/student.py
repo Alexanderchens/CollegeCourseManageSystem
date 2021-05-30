@@ -24,11 +24,14 @@ def insertstudent(s_id, c_id):
         db.close()
         return success
 
+
+# 查询当前学生已经拥有的课程
 @app.route()
-def getcourselist():
+def getcourselist(student_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    find_str = "select * from course"
+    find_class =
+    find_str = "select * from course where started=1;"
     mcs.execute(find_str)
     courselist = mcs.fetchall()
     t = {}
@@ -36,3 +39,16 @@ def getcourselist():
         t[str(i)] = courselist[i]
     return jsonify(t)
 
+
+@app.route()
+# 查询当前可以用于选课的课程表单信息
+def showselectablecourse():
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+    mcs = db.cursor()
+    find_str = "select * from course where started=0;"
+    mcs.execute(find_str)
+    courselist = mcs.fetchall()
+    t = {}
+    for i in courselist:
+        t[str(i)] = courselist[i]
+    return jsonify(t)

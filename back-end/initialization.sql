@@ -30,6 +30,7 @@ password varchar(50),
 primary key (i_id)
 );
 
+alter table class add
 CREATE TABLE classroom(
 building varchar(10),
 room_number varchar(20),
@@ -44,11 +45,12 @@ credits numeric(2,0) check(credits>0),
 type varchar(20),
 hour int,
 dept_name varchar(20),
+started bit,
 primary key (c_id),
 foreign key (dept_name) references department(dept_name) on delete set null
 );
 
-drop table teaches;
+
 create table teaches
 	(i_id varchar(5),
 	 c_id varchar(8),

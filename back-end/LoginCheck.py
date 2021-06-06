@@ -1,11 +1,17 @@
 # 登录确认
 import pymysql as pms
+from flask import Flask
+from flask import jsonify
+from flask_cors import CORS
+app = Flask(__name__)
+cors = CORS(app,  resources={r"/logincheck": {"origins": "*"}})
 
 
 # 参数分别为：数据库 id 密码
 # 分别向三个库查找id
 # 失败时返回false
 # 成功时返回[id，user_class]
+@app.route('/logincheck', methods=['GET', 'POST'])
 def logincheck(db, ids, password):
     mycursor = db.cursor()
     exe_str = "SELECT PASSWORD FROM student WHERE s_id='%s'" % ids
@@ -39,6 +45,7 @@ def logincheck(db, ids, password):
 
 
 # 调试示例
+'''
 dtb = pms.connect("localhost", "root", "root", "CollegeCourseManageSystem")
 mcs = dtb.cursor()
 ins = "INSERT INTO student(s_id,password) VALUES ('20193039', 'cocoa');"
@@ -47,3 +54,4 @@ if logincheck(dtb, '20193039', 'cocoa'):
     print('success')
 else:
     print('what a fail')
+'''

@@ -8,9 +8,12 @@ name varchar(20),
 password varchar(50),
 primary key (s_id)
 );
+alter table student add class_name varchar(20);
+alter table student add constraint student_ibfk_1 foreign key (class_name) references class(name);
 
 CREATE TABLE class(
-name varchar(20)
+name varchar(20),
+primary key (name)
 );
 
 CREATE TABLE major(
@@ -30,7 +33,6 @@ password varchar(50),
 primary key (i_id)
 );
 
-alter table class add
 CREATE TABLE classroom(
 building varchar(10),
 room_number varchar(20),
@@ -61,6 +63,8 @@ create table teaches
 	 foreign key (i_id) references instructor (i_id)
 		on delete cascade
 	);
+alter table teaches add class_name varchar(20);
+alter table teaches add constraint teaches_ibfk_3 foreign key (class_name) references class(name);
 
 CREATE TABLE time_slot(
 weeknumber numeric(2,0),
@@ -94,7 +98,22 @@ i_id varchar(20),
 c_id varchar(20),
 year numeric(4,0),
 semester varchar(6),
-foreign key (s_id) references student(s_id),
+foreign key (i_id) references instructor(i_id),
 foreign key (c_id) references course(c_id),
-primary key (s_id,c_id,year,semester)
+primary key (i_id,c_id,year,semester)
+);
+
+CREATE TABLE lesson(
+c_id varchar(20),
+year numeric(4,0),
+semester varchar(6),
+weeknumber numeric(2,0),
+weekday numeric(1,0),
+time_slot_number numeric(2,0),
+building varchar(10),
+room_number varchar(20),
+foreign key (c_id) references course(c_id),
+foreign key (weeknumber, weekday, time_slot_number) references time_slot(weeknumber, weekday, time_slot_number),
+foreign key (building, room_number) references classroom(building, room_number),
+primary key (c_id, year, semester, weeknumber, weekday, time_slot_number, building, room_number)
 );

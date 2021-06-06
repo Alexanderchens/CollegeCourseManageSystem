@@ -23,7 +23,8 @@ def querystudentlist(c_id):
     db.close()
     return s_list
 
-#老师挑选学生，前端返回该课程最终学生列表，插入数据库
+
+# 老师挑选学生，前端返回该课程最终学生列表，插入数据库
 def confirmstudent(s_list):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()

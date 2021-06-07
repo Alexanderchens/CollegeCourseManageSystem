@@ -3,11 +3,12 @@ from flask import Flask,jsonify
 app = Flask(__name__)
 
 
+# 在待选课程中插入新的学生，根据c_id索
 @app.route()
 def insertstudent(s_id, c_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    insert_str = "insert into t_student(s_id,c_id)values( % s, % s)"
+    insert_str = "insert into student_pick(s_id,c_id)values(%s, %s)"
 
     try:
         mcs.execute(insert_str, (s_id, c_id))

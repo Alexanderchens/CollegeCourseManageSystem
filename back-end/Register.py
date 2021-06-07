@@ -5,7 +5,8 @@ import pymysql as pms
 from flask import Flask, jsonify
 app = Flask(__name__)
 
-@app.route('/')
+
+@app.route('/register', methods=['GET', 'POST'])
 def register(db, ids, password, name, user_class):
     mcs = db.cursor()
     if user_class == 1:

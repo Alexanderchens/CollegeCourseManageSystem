@@ -1,15 +1,5 @@
-CREATE DATABASE CollegeCourseManageSystem;
-
-use CollegeCourseManageSystem;
-
-CREATE TABLE student(
-s_id varchar(20),
-name varchar(20),
-password varchar(50),
-primary key (s_id)
-);
-alter table student add class_name varchar(20);
-alter table student add constraint student_ibfk_1 foreign key (class_name) references class(name);
+CREATE DATABASE collegecoursemanagesystem;
+use collegecoursemanagesystem;
 
 CREATE TABLE class(
 name varchar(20),
@@ -26,6 +16,15 @@ dept_name varchar(20),
 primary key (dept_name)
 );
 
+CREATE TABLE student(
+s_id varchar(20),
+name varchar(20),
+password varchar(50),
+class_name varchar(20),
+primary key (s_id),
+foreign key (class_name) references class(name)
+);
+
 CREATE TABLE instructor(
 i_id varchar(20),
 name varchar(20),
@@ -34,7 +33,7 @@ primary key (i_id)
 );
 
 CREATE TABLE classroom(
-building varchar(10),
+building varchar(20),
 room_number varchar(20),
 capacity numeric(4,0),
 primary key (building,room_number)
@@ -47,24 +46,22 @@ credits numeric(2,0) check(credits>0),
 type varchar(20),
 hour int,
 dept_name varchar(20),
-started bit,
+started varchar(10), # 待选课、待审核、已开始、
 primary key (c_id),
 foreign key (dept_name) references department(dept_name) on delete set null
 );
 
-
-create table teaches
-	(i_id varchar(5),
-	 c_id varchar(8),
-	 semester varchar(6),
-	 year numeric(4,0),
-	 primary key (i_id, c_id, semester, year),
-	 foreign key (c_id) references course(c_id),
-	 foreign key (i_id) references instructor (i_id)
-		on delete cascade
-	);
-alter table teaches add class_name varchar(20);
-alter table teaches add constraint teaches_ibfk_3 foreign key (class_name) references class(name);
+create table teaches(
+i_id varchar(20),
+c_id varchar(20),
+semester varchar(6),
+year numeric(4,0),
+class_name varchar(20),
+primary key (i_id, c_id, semester, year,class_name),
+foreign key (c_id) references course(c_id),
+foreign key (i_id) references instructor(i_id) on delete cascade,
+foreign key (class_name) references class(name)
+);
 
 CREATE TABLE time_slot(
 weeknumber numeric(2,0),
@@ -80,17 +77,18 @@ password varchar(50),
 primary key (m_id)
 );
 
-# 未执行
 CREATE TABLE student_pick(
 s_id varchar(20),
 c_id varchar(20),
+i_id varchar(20),
 year numeric(4,0),
 semester varchar(6),
+status varchar(10),
 foreign key (s_id) references student(s_id),
 foreign key (c_id) references course(c_id),
-primary key (s_id,c_id,year,semester)
+foreign key (i_id) references instructor(i_id),
+primary key (s_id,c_id,i_id,year,semester)
 );
-
 
 # 任课老师
 CREATE TABLE teacher_rel(
@@ -110,8 +108,9 @@ semester varchar(6),
 weeknumber numeric(2,0),
 weekday numeric(1,0),
 time_slot_number numeric(2,0),
-building varchar(10),
+building varchar(20),
 room_number varchar(20),
+status varchar(10),
 foreign key (c_id) references course(c_id),
 foreign key (weeknumber, weekday, time_slot_number) references time_slot(weeknumber, weekday, time_slot_number),
 foreign key (building, room_number) references classroom(building, room_number),

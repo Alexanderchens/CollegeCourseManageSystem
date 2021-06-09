@@ -2,8 +2,11 @@
 # 先检查user表中有没有已经创建的用户，如果有则返回用户名重复，无则insert
 
 import pymysql as pms
+from flask import Flask, jsonify
+app = Flask(__name__)
 
 
+@app.route('/register', methods=['GET', 'POST'])
 def register(db, ids, password, name, user_class):
     mcs = db.cursor()
     if user_class == 1:

@@ -1,3 +1,4 @@
+<!--学生查询选课情况表格-->
 <template>
   <div>
     <p class="title"><i class="el-icon-tickets"></i>选课情况查询</p>
@@ -5,7 +6,10 @@
       border
       :data="tableData"
       style="width: 100%">
+<!--      编号-->
       <el-table-column
+        prop="classId"
+        label="编号"
         type="index">
       </el-table-column>
       <el-table-column
@@ -58,11 +62,11 @@
             disable-transitions="true">{{scope.row.tag}}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" fixed="right">
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">详情</el-button>
+            @click="handleDetail(scope.$index, scope.row)">详情</el-button>
           <el-button
             size="mini"
             type="danger"
@@ -80,7 +84,9 @@ export default {
   data () {
     // number = 当前选择人数/最后收纳人数
     return {
+      // 测试数据
       tableData: [{
+        classId: 0,
         name: '计算机网络',
         number: '15/40',
         place: 'A1 404',
@@ -90,6 +96,7 @@ export default {
         semester: '上',
         time: '上课时间1'
       }, {
+        classId: 1,
         name: '量子力学',
         number: '38/40',
         place: 'A3 403',
@@ -99,6 +106,7 @@ export default {
         semester: '下',
         time: '上课时间2'
       }, {
+        classId: 2,
         name: '软件分析与建模',
         number: '19/40',
         place: 'A1 302',
@@ -114,6 +122,10 @@ export default {
     show () {
       console.log(this.$refs.classTag.type)
     },
+    /**
+     *  @description 不用理会，前端展示函数
+     *  @param index
+     */
     showStatus (index) {
       if (index === '待筛选') {
         return 'primary'
@@ -121,24 +133,45 @@ export default {
         return 'danger'
       } else return 'success'
     },
-    handleEdit (index, row) {
+    /**
+     * 详情页面
+     * @param index 顺序
+     * @param row 行信息
+     */
+    handleDetail (index, row) {
       console.log(index, row)
       this.$message({
         showClose: true,
-        message: index,
-        row,
+        message: '查看课程详细信息',
         type: 'success'
       })
+      this.$router.push({
+        path: '/classInfo/',
+        query: {
+          id: row.classId
+        }
+      })
     },
+    /**
+     * 退选
+     * @param index
+     * @param row
+     */
     handleDelete (index, row) {
       console.log(index, row)
+      this.tableData.splice(index, 1)
       this.$message({
         showClose: true,
         message: index,
-        row,
         type: 'success'
       })
     },
+    /**
+     * 前端展示函数
+     * @param row
+     * @param column
+     * @returns {*}
+     */
     formatter (row, column) {
       return row.address
     },

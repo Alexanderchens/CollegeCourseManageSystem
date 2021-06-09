@@ -1,3 +1,4 @@
+
 <template>
   <div>
     <p class="title"><i class="el-icon-tickets"></i>课程待审核信息</p>
@@ -47,6 +48,7 @@ export default {
   name: 'verifyTable',
   data () {
     return {
+      // 测试数据
       tableData: [{
         name: '计算机网络',
         teacher: '黄敏',
@@ -78,7 +80,7 @@ export default {
     },
     handleDelete (index, row) {
       console.log(index, row)
-      this.tableData.splice(this.tableData.indexOf(index), 1)
+      this.tableData.splice(this.tableData.index, 1)
       this.$message({
         showClose: true,
         message: '驳回成功',

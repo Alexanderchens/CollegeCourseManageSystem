@@ -5,17 +5,17 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint",
-    "electron:build": "vue-cli-service electron:build",
-    "electron:serve": "vue-cli-service electron:serve",
-    "postinstall": "electron-builder install-app-deps",
-    "postuninstall": "electron-builder install-app-deps"
+    "lint": "vue-cli-service lint"
   },
   "main": "background.js",
   "dependencies": {
     "core-js": "^3.6.5",
     "element-ui": "^2.4.5",
+    "js-cookie": "^2.2.1",
+    "node-sass": "^4.14.1",
+    "sass-loader": "^7.3.1",
     "vue": "^2.6.11",
+    "vue-quill-editor": "^3.0.6",
     "vue-resource": "^1.5.2",
     "vue-router": "^3.2.0"
   },
@@ -28,8 +28,6 @@
     "axios": "^0.21.1",
     "babel-eslint": "^10.1.0",
     "babel-plugin-component": "^1.1.1",
-    "electron": "11.0.0",
-    "electron-devtools-installer": "^3.1.0",
     "eslint": "^6.7.2",
     "eslint-plugin-import": "^2.20.2",
     "eslint-plugin-node": "^11.1.0",
@@ -38,16 +36,14 @@
     "eslint-plugin-vue": "^6.2.2",
     "less": "^4.1.1",
     "less-loader": "^7.3.0",
-    "node-sass": "^4.14.1",
-    "sass-loader": "^7.3.1",
-    "vue-cli-plugin-electron-builder": "^2.0.0-rc.6",
+    "style-loader": "^2.0.0",
     "vue-cli-plugin-element": "^1.0.1",
     "vue-template-compiler": "^2.6.11"
   },
   "eslintConfig": {
-    "root": true,
+    "root": false,
     "env": {
-      "node": true
+      "node": false
     },
     "extends": [
       "plugin:vue/essential",
@@ -56,7 +52,15 @@
     "parserOptions": {
       "parser": "babel-eslint"
     },
-    "rules": {}
+    "rules": {
+      "no-multi-spaces": "off",
+      "space-before-function-paren": "off",
+      "space-before-blocks": "off",
+      "no-mixed-spaces-and-tabs": "off",
+      "no-sequences": "off",
+      "brace-style": "off",
+      "eqeqeq": "off"
+    }
   },
   "browserslist": [
     "> 1%",

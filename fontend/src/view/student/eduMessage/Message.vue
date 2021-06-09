@@ -1,24 +1,21 @@
 <template>
-  <div>
-    <el-card class="classnote-box-card" shadow="hover" header="上课提醒">
-      <div v-for="x in 30" :key="x" class="classnote item">
-        <i class="el-icon-bell"></i>{{'上课提醒' + x}}
-        <el-divider content-position="right">{{ dateTime }}</el-divider>
-      </div>
-    </el-card>
-    <el-card class="message-box-card" shadow="hover" header="发布消息">
-      <div v-for="o in 60" :key="o" class="message item">
-        <i class="el-icon-bell"></i>{{'列表内容 ' + o }}
-        <el-divider content-position="right">{{ dateTime }}</el-divider>
-      </div>
-    </el-card>
+  <div class="block">
+    <el-timeline>
+      <!--      时间戳-->
+      <el-timeline-item timestamp="2018/4/12" v-for="x in 10" :key="x" placement="top">
+        <el-card>
+<!--          信息文本-->
+          <p>王小虎 提交于 2018/4/12 20:46 {{x}}</p>
+        </el-card>
+      </el-timeline-item>
+    </el-timeline>
   </div>
 
 </template>
 
 <script>
 export default {
-  name: 'Message.vue',
+  name: 'message',
   data () {
     const dt = this.getDate({
     })
@@ -42,29 +39,5 @@ export default {
 </script>
 
 <style lang="less" scoped>
-  .message {
-    font-size: 20px;
-    text-align: center;
-  }
-  .item {
-    padding: 18px 0;
-  }
-  .classnote{
-    font-size: 20px;
-    text-align: center;
-  }
 
-  .message-box-card {
-    width: 480px;
-    float: right;
-  }
-
-  .el-icon-bell{
-    float: left;
-  }
-
-  .classnote-box-card{
-    float: left;
-    width: 500px;
-  }
 </style>

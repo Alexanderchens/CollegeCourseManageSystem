@@ -14,6 +14,7 @@ import Notification from './view/admin/note/notification'
 import Verify from './view/admin/verify/verify'
 import Administration from './view/admin/administration/administration'
 import ConfirmForm from './view/admin/verify/confirm'
+
 Vue.use(VueRouter)
 
 const router = new VueRouter({
@@ -30,16 +31,23 @@ const router = new VueRouter({
     // 学生
     {
       path: '/student',
+      name: 'student',
       component: StuHome,
       redirect: '/student/message',
       children: [
-        { path: 'message', component: Message },
+        { path: 'message', component: Message, name: 'message' },
         { path: 'table', component: Table },
         { path: 'query', component: Query },
         { path: 'select', component: Select },
         { path: 'classroom', component: Classroom }
       ]
     },
+    // 课程详情页面
+    {
+      path: '/classInfo',
+      component: () => import('./view/student/class/detailInfo')
+    },
+    // 管理员
     {
       path: '/admin',
       mode: 'history',
@@ -57,6 +65,12 @@ const router = new VueRouter({
     {
       path: '/admin/application/:id',
       component: ConfirmForm
+    },
+    // 个人中心页
+    {
+      path: '/user-center',
+      name: 'userCenter',
+      component: () => import('./view/UserCenter')
     },
     {
       path: '/404',

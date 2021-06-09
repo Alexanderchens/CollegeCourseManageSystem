@@ -1,25 +1,24 @@
+<!--官员发布通知页面-->
 <template>
   <div>
-    <el-card header="发布通知" style="color: #3d95ff">
-      <el-row v-for="value in notes" :key="value">
-          <el-link icon="el-icon-edit" style="list-style-position: inside">{{value.title}}</el-link>
-          <el-button type="danger" icon="el-icon-delete" circle style="float: right"></el-button>
-          <el-divider content-position="right">{{ value.body }}</el-divider>
-      </el-row>
+    <el-card style="margin-bottom: 100px">
+      <quill-editor class="editor"
+                    ref="myTextEditor"
+                    v-model="note.content"
+                    :options="editorOption"
+                    @blur="onEditorBlur($event)"
+                    @focus="onEditorFocus($event)"
+                    @ready="onEditorReady($event)"
+                    @change="onEditorChange($event)"
+                    style="height: 300px"></quill-editor>
+      <el-button type="primary" style="margin-top: 100px" @click.prevent="submit">提交</el-button>
     </el-card>
-    <el-row>
-      <el-card style="margin-top: 100px">
-        <quill-editor class="editor"
-                      ref="myTextEditor"
-                      v-model="content"
-                      :options="editorOption"
-                      @blur="onEditorBlur($event)"
-                      @focus="onEditorFocus($event)"
-                      @ready="onEditorReady($event)"
-                      @change="onEditorChange($event)"></quill-editor>
-        <el-button type="primary" @click.prevent="submit">提交</el-button>
-      </el-card>
+    <el-card header="发布通知" style="color: #3d95ff">
+    <el-row v-for="value in notes" :key="value">
+        <el-link icon="el-icon-edit" style="list-style-position: inside" v-html="value.content"></el-link>
+        <el-divider content-position="center">{{ value.dateTime }}</el-divider>
     </el-row>
+  </el-card>
   </div>
 </template>
 
@@ -38,8 +37,8 @@ export default {
     return {
       notes: [],
       note: {
-        dateTime: null,
-        content: null
+        dateTime: null,  // 更新日期
+        content: null  // 通知内容
       },
       editorOption: {
         modules: {
@@ -77,8 +76,6 @@ export default {
     onEditorReady (editor) {},
     // 值发生变化
     onEditorChange (editor) {
-      this.note.content = editor.html
-      console.log(editor)
     },
     // 显示当前时间（年月日时分秒）
     timeFormate () {
@@ -91,7 +88,8 @@ export default {
       // let week = new Date(timeStamp).getDay();
       // let weeks = ["日","一","二","三","四","五","六"];
       // let getWeek = "星期" + weeks[week];
-      this.nowTime = year + '-' + month + '-' + date + '-' + '-' + hh + ':' + mm
+      const nowTime = year + '-' + month + '-' + date + '-' + hh + ':' + mm
+      return nowTime
     },
     nowTimes () {
       this.timeFormate(new Date())
@@ -102,23 +100,18 @@ export default {
     //   clearInterval(this.nowTimes)
     //   this.nowTimes = null;
     // },
+    // 提交
     submit () {
-      this.note.dateTime = new Date().getFullYear() + '-' + new Date().getMonth() + 1 < 10 ? '0' + (new Date().getMonth() + 1) : new Date().getMonth() + 1 + '-' + new Date().getDate() < 10 ? '0' + new Date().getDate() : new Date().getDate()
-      this.notes.unshift(this.note)
-      this.$http.post('http://jsonplaceholder.typicode.com/posts', {
-        body: this.content,
-        userId: 1
-      })
-        .then(function (data) {
-          console.log(data)
-        })
+      this.note.dateTime = this.timeFormate()  // 获取发布的时间
+      // 更新数据库
+      const tmpNote = { content: this.note.content, dateTime: this.note.dateTime }
+      this.notes.unshift(tmpNote)
     }
   },
   created () {
     this.$http.get('http://jsonplaceholder.typicode.com/posts')
       .then(function (data) {
         // console.log(data)
-        this.notes = data.body.slice(0, 10)
       })
   },
   computed: {

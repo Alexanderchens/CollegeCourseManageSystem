@@ -1,3 +1,4 @@
+<!--学生选课页面-->
 <template>
   <div>
     <p class="title"><i class="el-icon-tickets"></i>学生选课</p>
@@ -6,6 +7,8 @@
       :data="tableData"
       style="width: 100%">
       <el-table-column
+        prop="classId"
+        label="编号"
         type="index">
       </el-table-column>
       <el-table-column
@@ -45,13 +48,19 @@
       </el-table-column>
       <el-table-column
         label="操作"
-        prop="choose">
+        prop="choose"
+        fixed="right">
         <template slot-scope="scope">
           <el-button
             id="editBtn"
+            size="mini"
             @click="handleEdit(scope.$index, scope.row)"
             :type="showBtnType(scope.$index, scope.row)"
             v-text="showBtnText(scope.$index, scope.row)"></el-button>
+          <el-button
+            size="mini"
+            type="info"
+            @click="handleDetail(scope.$index, scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -64,7 +73,9 @@ export default {
   editBtn: '#editBtn',
   data () {
     return {
+      // 测试数据
       tableData: [{
+        classId: '1',
         name: '计算机网络',
         number: '15/40',
         place: 'A1 404',
@@ -74,6 +85,7 @@ export default {
         time: '上课时间1',
         choose: false
       }, {
+        classId: '2',
         name: '量子力学',
         number: '38/40',
         place: 'A3 403',
@@ -83,6 +95,7 @@ export default {
         time: '上课时间2',
         choose: false
       }, {
+        classId: '3',
         name: '软件分析与建模',
         number: '19/40',
         place: 'A1 302',
@@ -105,6 +118,11 @@ export default {
         return 'danger'
       } else return 'success'
     },
+    /**
+     * 点击选课或者退选
+     * @param index 课程编号
+     * @param row
+     */
     handleEdit (index, row) {
       row.choose = !row.choose
       this.$message({
@@ -112,6 +130,26 @@ export default {
         message: index,
         row,
         type: 'success'
+      })
+    },
+    /**
+     * 详情页面
+     * @param index 顺序
+     * @param row 行的信息
+     */
+    handleDetail (index, row) {
+      console.log(index, row)
+      this.$message({
+        showClose: true,
+        message: index,
+        row,
+        type: 'success'
+      })
+      this.$router.push({
+        path: '/classInfo/',
+        query: {
+          id: row.classId
+        }
       })
     },
     showBtnType (index, row) {

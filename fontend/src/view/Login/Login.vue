@@ -1,10 +1,11 @@
+<!--登录界面-->
 <template>
-    <div class="login_container">
+<!--  背景图片（华为mateX2壁纸）-->
+    <div class="login_container" :style="'background-image:url('+ Background +')'">
       <div class="login_box">
         <div class="avatar_box">
-          <img src="../../assets/logo.png" alt="">
+          <img src="../../assets/img/logo.png" alt="">
         </div>
-
 <!--        登录表单区域-->
         <el-form ref="loginFormRef" :rules="loginFormRules" :model=" loginForm " label-width="0px" class="login_form">
           <div class="form_title">选课管理系统</div>
@@ -33,15 +34,18 @@
 </template>
 
 <script>
+import Background from '../../assets/img/loginBackground.jpg'
 export default {
   data () {
     return {
+      Background,  // 背景图片url
+      // 登录表单
       loginForm: {
-        username: '',
-        password: '',
-        userType: '1'
+        username: '',  // 用户名（可能就是学号那些）
+        password: '',  // 密码
+        userType: '1'     //  登录类型：1：学生 2：老师 3：管理员
       },
-      // 校验
+      // 前端简单校验登录
       loginFormRules: {
         username: [
           {
@@ -49,6 +53,7 @@ export default {
             message: '请输入用户名称',
             trigger: 'blur'
           },
+          // 用户名为正整数校验
           {
             pattern: /^[0-9.-]+$/,
             message: '用户名格式错误',
@@ -61,11 +66,13 @@ export default {
     }
   },
   methods: {
-    // 点击重置按钮
+    // 点击重置信息按钮
     resetLoginForm () {
-      // console.log(this)
       this.$refs.loginFormRef.resetFields()
     },
+    /**
+     * 登录函数
+     */
     login () {
       this.$refs.loginFormRef.validate(async (valid) => {
         console.log(valid)
@@ -79,12 +86,26 @@ export default {
         console.log('通过验证')
         this.$message.success('登录成功')
         // window.sessionStorage.setItem('token', res.data.token)
-        // 跳转
+        // 跳转对应人员的页面
         if (this.loginForm.userType === '1') {
-          this.$router.push('/student')
+          window.sessionStorage.setItem('user', JSON.stringify({
+            userType: this.loginForm.userType,
+            username: this.loginForm.username
+          }))
+          this.$router.push({
+            path: '/student'
+          })
         } else if (this.loginForm.userType === '2') {
+          window.sessionStorage.setItem('user', JSON.stringify({
+            userType: this.loginForm.userType,
+            username: this.loginForm.username
+          }))
           this.$router.push('/student')
         } else {
+          window.sessionStorage.setItem('user', JSON.stringify({
+            userType: this.loginForm.userType,
+            username: this.loginForm.username
+          }))
           this.$router.push('/admin')
         }
       })
@@ -95,16 +116,35 @@ export default {
 </script>
 
 <style lang="less" scoped>
+// 背景样式
 .login_container{
-  background-color: blanchedalmond;
-  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100vh;
+  background-size: cover;
+  .form-box {
+    width: 320px;
+    padding: 15px 30px 20px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0 15px 30px 0 rgba(0, 0, 1, .1);
+    .form-title {
+      margin: 0 auto 35px;
+      text-align: center;
+      color: #707070;
+      font-size: 18px;
+      letter-spacing: 2px;
+    }
+  }
 }
-
+// 登录表单的样式
 .login_box{
+    border-radius: 1rem;
     width: 450px;
     height: 350px;
     background-color: #fff;
-    border-radius: 3px;
     position: absolute;
     top: 50%;
     left: 50%;

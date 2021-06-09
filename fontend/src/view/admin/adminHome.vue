@@ -3,15 +3,19 @@
     <!--    头部-->
     <el-header>
       <div>
-        <img src="../../assets/logo.png" alt="" class="logo_pic">
+        <img src="../../assets/img/logo.png" alt="" class="logo_pic">
         <span>选课管理系统-教务员端</span>
       </div>
-      <el-dropdown>
-        <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+      <!--            右侧头像-->
+      <el-dropdown class="user-avatar-wrapper" @command="handleCommand">
+        <div class="avatar-box">
+          <el-avatar size="small" src="data:image/png;base64,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" />
+          <i class="el-icon-caret-bottom" />
+        </div>
+        <!--              下拉菜单-->
         <el-dropdown-menu slot="dropdown">
-          <el-dropdown-item>注销</el-dropdown-item>
-          <el-dropdown-item divided>其他业务1</el-dropdown-item>
-          <el-dropdown-item>其他业务2</el-dropdown-item>
+          <el-dropdown-item command="userCenter">个人中心</el-dropdown-item>
+          <el-dropdown-item command="loginOut">退出登录</el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </el-header>
@@ -77,17 +81,82 @@
 </template>
 
 <script>
+import Cookies from 'js-cookie'
+const TokenKey = 'ADMIN_DESIGN_KEY'
 export default {
   name: 'adminHome',
   data () {
     return {
       isCollapse: false
     }
+  },
+  methods: {
+    /**
+     * 处理点击头像后的时间
+     */
+    handleCommand(command) {
+      // 退出登录
+      if (command === 'loginOut') {
+        this.loginOut()
+      }
+      // 个人中心
+      if (command === 'userCenter') {
+        const routeData = this.$router.resolve({
+          name: 'userCenter',
+          path: '/user-center',
+          params: {
+            userId: this.userId,
+            type: this.userType
+          }
+        })
+        window.open(routeData.href, '_blank')
+      }
+    },
+    /**
+     * 退出登录
+     */
+    loginOut() {
+      this.$confirm('确定注销并退出系统吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.removeToken()
+        this.$router.push('/login')
+      })
+    },
+    removeToken() {
+      return Cookies.remove(TokenKey)
+    }
   }
 }
 </script>
 
 <style lang="less" scoped>
+/*头像*/
+.user-avatar-wrapper {
+  float: left;
+  width: 48px;
+  padding: 3px 0 3px 20px;
+  margin-left: 20px;
+  border-left: solid 1px #ddd;
+  cursor: pointer;
+  .avatar-box {
+    outline: none;
+  }
+  .el-avatar--small {
+    display: inline-block;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+  }
+  i {
+    display: inline-block;
+    vertical-align: middle;
+    margin-left: 2px;
+  }
+}
   .el-header{
     background-color: #f1f1f1;
     display: flex;

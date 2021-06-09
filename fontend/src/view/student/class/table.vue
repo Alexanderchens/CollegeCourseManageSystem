@@ -1,3 +1,4 @@
+<!--学生课表页面-->
 <template>
   <div class="class-table">
     <div class="table-wrapper">
@@ -10,10 +11,9 @@
           </tr>
           </thead>
           <tbody>
-          <tr v-for="(lesson, lessonIndex) in classTableData.lessons" :key="lessonIndex">
+          <tr v-for="lessonIndex in 11" :key="lessonIndex">
             <td>
               <p>{{'第' + digital2Chinese(lessonIndex+1) + "节"}}</p>
-              <p class="period">{{ lesson }}</p>
             </td>
 
             <td v-for="(course, courseIndex) in classTableData.courses" :key="courseIndex">
@@ -32,17 +32,9 @@ export default {
   name: 'table',
   data () {
     return {
+      // 课程表
       classTableData: {
-        lessons: [
-          '08:00-09:00',
-          '09:00-10:00',
-          '10:00-11:00',
-          '11:00-12:00',
-          '13:00-14:00',
-          '14:00-15:00',
-          '15:00-16:00',
-          '16:00-17:00'
-        ],
+        // 二维列表，测试数据
         courses: [
           ['', '', '', '', '', '', '', ''],
           ['生物', '物理', '化学', '政治', '历史', '英语', '', '语文'],

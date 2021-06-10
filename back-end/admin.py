@@ -6,7 +6,9 @@ from csv import reader
 
 # 接收一个excel文件，将excel中的数据批量导入database
 # excel文件需保存为csv格式，首行项分别为pid, password, name
-def adminload(db, file):
+def adminload(file):
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+    mcs = db.cursor()
     f = open(file, "r")
     lines = reader(f)
     for line in lines:
@@ -17,34 +19,33 @@ def adminload(db, file):
 
 
 # 调试示例
-# dtb = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
-# adminload(dtb, "mytest.csv")
+#dtb = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+#adminload(dtb, "mytest.csv")
 
 
 def adminpasswordchange(ids, newpassword, user_class):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    if user_class == 3:
-        update_str = "update system_manager set password = '%s' where m_id= '%s'" % (newpassword, ids)
-        msg = mcs.execute(update_str)
-        if msg != 1:
-            print("faild executed!")
-    if user_class == 2:
-        update_str = "update instructor set password = '%s' where i_id= '%s'" % (newpassword, ids)
-        msg = mcs.execute(update_str)
-        if msg != 1:
-            print("faild executed!")
-    if user_class == 1:
+    if user_class == 0:
         update_str = "update student set password = '%s' where s_id= '%s'" % (newpassword, ids)
+    if user_class == 1:
+        update_str = "update instructor set password = '%s' where i_id= '%s'" % (newpassword, ids)
+    if user_class == 2:
+        update_str = "update system_manager set password = '%s' where m_id= '%s'" % (newpassword, ids)
+    try:
         msg = mcs.execute(update_str)
-        if msg != 1:
-            print("faild executed!")
-    db.commit()
-    mcs.close()
-    db.close()
+        db.commit()
+        print('插入成功')
+    except Exception as e:
+        print(e)
+        db.rollback()
+        print('插入失败')
+    finally:
+        mcs.close()
+        db.close()
 
 
-# 利用管理员权限进行全局范围的所有表项更改
+# 利用管理员权限进行全局范围的所有表项更改（可用）
 def adminchange(tablename, colunmname, primarykey, primarykeyvalue, newdata):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -60,7 +61,6 @@ def adminchange(tablename, colunmname, primarykey, primarykeyvalue, newdata):
     db.commit()
     mcs.close()
     db.close()
-
 
 # '''
 # 查询待审核课程的函数的测试用例
@@ -78,15 +78,30 @@ def findselectablecourse():
     courselist = mcs.fetchall()
     return courselist
 
-
 # 管理员审核完成之后将课程信息插入数据库
-def submitcourse(course_id, course_name, hour, credit, course_type, dept_name):
+# 此处instructor_id暂时用不上，但是前端需要将ins_id与课程信息捆绑，展示到学生选课页面中
+# course表新增属性started，表示课程是否开始，若已经开始则为'已开课'，否则为'待审核'。课程开始意味着选课结束
+# 管理员审核完成后将course中课程信息转移到lesson表中，并添加上课程上课的教室、时间段
+def submitcourse(c_id, year, semester, weeknumber, weekday, ts_num, building, room_num):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    sqlstr = "insert into course(c_id,course_name,credits,type,hour,dept_name,started) values (%s,%s,%s,%s,%s,%s,0);"\
-             % (course_id, course_name, credit, course_type, hour, dept_name)
+    update_str = "update course set started = '已开课' where c_id = '%s'" % c_id
+    mcs.execute(update_str)
+    find_str = "select i_id from course where c_id = '%s'" % c_id
+    mcs.execute(find_str)
+    i_id = mcs.fetchone()
+    print(i_id[0])
+    insert_str = "insert into teacher_rel(i_id, c_id, year, semester)value('%s','%s','%s','%s') "\
+                 % (str(i_id[0]), c_id, year, semester)
+    mcs.execute(insert_str)
+    sqlstr = "insert into lesson(c_id, year, semester, weeknumber, weekday, time_slot_number, \
+                  building, room_number,status) values ('%s','%s','%s','%s','%s','%s','%s','%s','待选课');" \
+                      % (c_id, year, semester, weeknumber, weekday, ts_num, building, room_num)
     mcs.execute(sqlstr)
     db.commit()
     mcs.close()
     db.close()
+    return '插入成功'
 
+if __name__ == '__main__':
+    submitcourse('jsjwl2021', 2021, 'fall', '7', '3', '5', 'A2', '402')

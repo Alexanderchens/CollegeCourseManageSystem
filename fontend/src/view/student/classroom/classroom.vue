@@ -123,11 +123,13 @@ export default {
     // 获取数据列表接口
     getTableList: function (query) {
       this.axios({
+        url: '',
         data: { query },
         method: 'post'
       }).then((res) => {
         console.log(res)
         // 后面获取数据库数据,并对tableData进行赋值
+        this.tableData = res.data
       }).catch((e) => {
         console.log(e)
       }).finally(() => {

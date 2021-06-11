@@ -9,21 +9,23 @@ def insert_student(s_id, c_id, i_id, year, semester):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
     insert_str = "insert into student_pick(s_id,c_id,i_id,year,semester,status)values(%s,%s,%s,%s,%s,%s)"
-
-    try:
-        mcs.execute(insert_str, (s_id, c_id, i_id, year, semester, "未选上"))
-        db.commit()
-        print('插入成功')
-        success = True
-    except Exception as e:
-        print(e)
-        db.rollback()
-        print('插入失败')
-        success = False
-    finally:
-        mcs.close()
-        db.close()
-        return success
+    if check_time_free(s_id, c_id):
+        try:
+            mcs.execute(insert_str, (s_id, c_id, i_id, year, semester, "未选上"))
+            db.commit()
+            print('插入成功')
+            success = True
+        except Exception as e:
+            print(e)
+            db.rollback()
+            print('插入失败')
+            success = False
+        finally:
+            mcs.close()
+            db.close()
+            return success
+    else:
+        return '时间冲突'
 # test for insert_student()
 
 
@@ -144,6 +146,25 @@ def find_time_empty_classroomlist(weeknumber, weekday, time_slot_number):
     courselist = find_time_courselist(weeknumber, weekday, time_slot_number)
     return find_empty_classroomlist(courselist)
 
+
+#查询对应课程是否与该学生所选课程有时间冲突
+def check_time_free(s_id,c_id):
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+    mcs = db.cursor()
+    courselist = getcourselist(s_id)
+    if len(courselist)!=0:
+        slot_list = []
+        for item in courselist:
+            find_str = "select * from ((select weeknumber, weekday, time_slot_number from coursetime where c_id ='%s')"\
+                " tb1 natural join " \
+             "(select weeknumber, weekday, time_slot_number from coursetime where c_id = '%s') tb2)" % (item[0], c_id)
+            mcs.execute(find_str)
+            slot_list = mcs.fetchall()
+            print(slot_list)
+            if len(slot_list) != 0:
+                return False
+        print(slot_list)
+    return True
 
 # print(find_time_empty_classroomlist(1, 1, 1))
 # 已通过

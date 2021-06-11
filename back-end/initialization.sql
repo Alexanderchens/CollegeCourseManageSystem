@@ -41,6 +41,7 @@ primary key (building,room_number)
 
 CREATE TABLE course(
 c_id varchar(20),
+i_id varchar(20),
 course_name varchar(50),
 credits numeric(2,0) check(credits>0),
 type varchar(20),
@@ -48,7 +49,8 @@ hour int,
 dept_name varchar(20),
 started varchar(10), # 待选课、待审核、已开始、
 primary key (c_id),
-foreign key (dept_name) references department(dept_name) on delete set null
+foreign key (dept_name) references department(dept_name) on delete set null,
+foreign key (i_id) references instructor(i_id)
 );
 
 create table teaches(

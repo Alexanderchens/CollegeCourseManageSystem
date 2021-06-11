@@ -8,10 +8,10 @@ app = Flask(__name__)
 def insert_student(s_id, c_id, i_id, year, semester):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    insert_str = "insert into student_pick(s_id,c_id,i_id,year,semester)values(%s,%s,%s,%s,%s)"
+    insert_str = "insert into student_pick(s_id,c_id,i_id,year,semester,status)values(%s,%s,%s,%s,%s,%s)"
 
     try:
-        mcs.execute(insert_str, (s_id, c_id, i_id, year, semester))
+        mcs.execute(insert_str, (s_id, c_id, i_id, year, semester, "未选上"))
         db.commit()
         print('插入成功')
         success = True

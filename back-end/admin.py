@@ -19,8 +19,8 @@ def adminload(file):
 
 
 # 调试示例
-#dtb = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
-#adminload(dtb, "mytest.csv")
+# dtb = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+# adminload(dtb, "mytest.csv")
 
 
 def adminpasswordchange(ids, newpassword, user_class):
@@ -62,6 +62,7 @@ def adminchange(tablename, colunmname, primarykey, primarykeyvalue, newdata):
     mcs.close()
     db.close()
 
+
 # '''
 # 查询待审核课程的函数的测试用例
 # 已通过验证
@@ -78,6 +79,7 @@ def findselectablecourse():
     courselist = mcs.fetchall()
     return courselist
 
+
 # 管理员审核完成之后将课程信息插入数据库
 # 此处instructor_id暂时用不上，但是前端需要将ins_id与课程信息捆绑，展示到学生选课页面中
 # course表新增属性started，表示课程是否开始，若已经开始则为'已开课'，否则为'待审核'。课程开始意味着选课结束
@@ -89,7 +91,7 @@ def submitcourse(c_id, year, semester, weeknumber, weekday, ts_num, building, ro
     mcs.execute(update_str)
     find_str = "select i_id from course where c_id = '%s'" % c_id
     mcs.execute(find_str)
-    i_id = mcs.fetchone()
+    i_id = list(mcs.fetchone())
     print(i_id[0])
     insert_str = "insert into teacher_rel(i_id, c_id, year, semester)value('%s','%s','%s','%s') "\
                  % (str(i_id[0]), c_id, year, semester)
@@ -102,6 +104,7 @@ def submitcourse(c_id, year, semester, weeknumber, weekday, ts_num, building, ro
     mcs.close()
     db.close()
     return '插入成功'
+
 
 if __name__ == '__main__':
     submitcourse('jsjwl2021', 2021, 'fall', '7', '3', '5', 'A2', '402')

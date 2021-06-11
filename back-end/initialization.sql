@@ -41,6 +41,7 @@ primary key (building,room_number)
 
 CREATE TABLE course(
 c_id varchar(20),
+i_id varchar(20),
 course_name varchar(50),
 credits numeric(2,0) check(credits>0),
 type varchar(20),
@@ -48,7 +49,8 @@ hour int,
 dept_name varchar(20),
 started varchar(10), # 待选课、待审核、已开始、
 primary key (c_id),
-foreign key (dept_name) references department(dept_name) on delete set null
+foreign key (dept_name) references department(dept_name) on delete set null,
+foreign key (i_id) references instructor(i_id)
 );
 
 create table teaches(
@@ -105,14 +107,22 @@ CREATE TABLE lesson(
 c_id varchar(20),
 year numeric(4,0),
 semester varchar(6),
-weeknumber numeric(2,0),
-weekday numeric(1,0),
-time_slot_number numeric(2,0),
 building varchar(20),
 room_number varchar(20),
 status varchar(10),
 foreign key (c_id) references course(c_id),
-foreign key (weeknumber, weekday, time_slot_number) references time_slot(weeknumber, weekday, time_slot_number),
 foreign key (building, room_number) references classroom(building, room_number),
-primary key (c_id, year, semester, weeknumber, weekday, time_slot_number, building, room_number)
+primary key (c_id, year, semester, building, room_number)
 );
+
+create table coursetime(
+c_id varchar(20),
+weeknumber numeric(2,0),
+weekday numeric(1,0),
+time_slot_number numeric(2,0),
+primary key (c_id,weeknumber, weekday, time_slot_number),
+foreign key (c_id) references course(c_id),
+foreign key (weeknumber, weekday, time_slot_number) references time_slot(weeknumber, weekday, time_slot_number)
+);
+
+use collegecoursemanagesystem;

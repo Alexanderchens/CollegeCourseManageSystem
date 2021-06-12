@@ -1,7 +1,7 @@
 import json
 
 import pymysql as pms
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from flask_cors import cross_origin
 
 app = Flask(__name__)
@@ -154,8 +154,15 @@ def find_empty_classroomlist(course_list):
 @app.route('/')
 @cross_origin(supports_credentials=True)
 def find_time_empty_classroomlist(weeknumber, weekday, time_slot_number):
-    courselist = find_time_courselist(weeknumber, weekday, time_slot_number)
-    c_list = find_empty_classroomlist(courselist)
+    data = request.get_json()
+    weeknumber = data['weeknumber']
+    weekday = data['weekday']
+    time_slot_number = data['time_slot_number']
+    c_list = []
+    for ti in time_slot_number:
+        courselist = find_time_courselist(weeknumber, weekday, ti)
+        c_list.append(find_empty_classroomlist(courselist))
+
     return json.dumps({'emptyclassroomlist': c_list})
 
 

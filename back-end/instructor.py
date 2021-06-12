@@ -1,10 +1,15 @@
+import json
+
 import pymysql as pms
 from flask import Flask
+from flask_cors import cross_origin
 
 app = Flask(__name__)
 
 
 # 查课表（已测试）
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def queryforcourse(i_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -17,11 +22,12 @@ def queryforcourse(i_id):
     #     c_list += mcs.fetchall()
     mcs.close()
     db.close()
-    return c_list
+    return json.dumps({'teacherCourse': c_list})
 
 
 # studentlist 学生id的列表（已测试）
-# @app.route('/teacherchoose/')
+@app.route('/teacherchoose/')
+@cross_origin(supports_credentials=True)
 def querystudentlist(c_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -30,10 +36,12 @@ def querystudentlist(c_id):
     s_list = list(mcs.fetchall())
     mcs.close()
     db.close()
-    return s_list
+    return json.dumps({'studentList': s_list})
 
 
 # 老师挑选学生，前端返回该课程最终学生列表，插入数据库（已测试）
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def confirmstudent(s_list, i_id, c_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -46,6 +54,8 @@ def confirmstudent(s_list, i_id, c_id):
 
 
 # 老师填写课程信息，插入待审核课表(已测试)
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def submitcourseinformation(c_id, course_name, cre, ty, hour, dept_name):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()

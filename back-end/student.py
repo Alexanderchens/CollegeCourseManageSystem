@@ -1,10 +1,15 @@
+import json
+
 import pymysql as pms
 from flask import Flask, jsonify
+from flask_cors import cross_origin
+
 app = Flask(__name__)
 
 
 # 在待选课程中插入新的学生，根据c_id索
-# @app.route('/')
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def insert_student(s_id, c_id, i_id, year, semester):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -43,8 +48,9 @@ print(stulist)
 # 查询当前学生已经拥有的课程
 # 必修课按照班级分配，选修课按照学号分配
 # 先获取班级名字，然后获取必修课课程
-# @app.route()
 # 2.课表查询函数
+@app.route()
+@cross_origin(supports_credentials=True)
 def getcourselist(student_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -87,11 +93,12 @@ def getcourselist(student_id):
 # 四舍五入算通过了
 
 
-# @app.route('/')
 # 3.查询可选择的课表函数
 # 要从lesson中查询，因为只有lesson中包含有上课时间段的信息
 # print(show_selectable_course())
 # 已验证通过
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def show_selectable_course():
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -102,6 +109,8 @@ def show_selectable_course():
 
 
 # 根据时间段查找对应的课程列表
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def find_time_courselist(weeknumber, weekday, time_slot_number):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
@@ -142,13 +151,18 @@ def find_empty_classroomlist(course_list):
 
 
 # 根据时间段查找空教室
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def find_time_empty_classroomlist(weeknumber, weekday, time_slot_number):
     courselist = find_time_courselist(weeknumber, weekday, time_slot_number)
-    return find_empty_classroomlist(courselist)
+    c_list = find_empty_classroomlist(courselist)
+    return json.dumps({'emptyclassroomlist': c_list})
 
 
-#查询对应课程是否与该学生所选课程有时间冲突
-def check_time_free(s_id,c_id):
+# 查询对应课程是否与该学生所选课程有时间冲突
+@app.route('/')
+@cross_origin(supports_credentials=True)
+def check_time_free(s_id, c_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
     courselist = getcourselist(s_id)

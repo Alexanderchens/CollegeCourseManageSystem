@@ -1,7 +1,13 @@
 # 管理员导入学生数据信息
 import pymysql as pms
+from flask import Flask, jsonify, render_template, request
+import json
+from flask_cors import cross_origin
+
 import maininterface
 from csv import reader
+
+app = Flask(__name__)
 
 
 # 接收一个excel文件，将excel中的数据批量导入database
@@ -84,6 +90,8 @@ def findselectablecourse():
 # 此处instructor_id暂时用不上，但是前端需要将ins_id与课程信息捆绑，展示到学生选课页面中
 # course表新增属性started，表示课程是否开始，若已经开始则为'已开课'，否则为'待审核'。课程开始意味着选课结束
 # 管理员审核完成后将course中课程信息转移到lesson表中，并添加上课程上课的教室、时间段
+@app.route('/')
+@cross_origin(supports_credentials=True)
 def submitcourse(c_id, year, semester, weeknumber, weekday, ts_num, building, room_num):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()

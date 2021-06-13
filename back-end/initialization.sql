@@ -48,6 +48,7 @@ type varchar(20),
 hour int,
 dept_name varchar(20),
 started varchar(10), # 待选课、待审核、已开始、
+introducion varchar(200),
 primary key (c_id),
 foreign key (dept_name) references department(dept_name) on delete set null,
 foreign key (i_id) references instructor(i_id)

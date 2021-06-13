@@ -11,7 +11,7 @@ app = Flask(__name__)
 @app.route('/insertStudent')
 @cross_origin(supports_credentials=True)
 def insert_student():
-    data = data = request.get_json()
+    data = request.get_json()
     s_id = data['s_id']
     c_id = data['c_id']
     i_id = data['i_id']
@@ -213,8 +213,18 @@ def check_time_free():
 # 已通过
 
 
-@app.route('/coursecondition',methods=['GET','POST'])
+@app.route('/coursecondition', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 def coursecondition():
     data = request.get_json()
     s_id = data['s_id']
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
+    mcs = db.cursor()
+
+    find_selected = "select course_name,building,room_number,i.name,year,semester,status" \
+                    " from student_pick s join course c on s.c_id = c.c_id " \
+                    "join lesson l on s.c_id = l.c_id " \
+                    "join instructor i on c.i_id = i.i_id where s.s_id='%s'" % s_id
+    mcs.execute(find_selected)
+    result = list(mcs.fetchall())
+    

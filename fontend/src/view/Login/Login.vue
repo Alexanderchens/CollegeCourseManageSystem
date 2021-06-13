@@ -35,6 +35,7 @@
 
 <script>
 import Background from '../../assets/img/loginBackground.jpg'
+
 export default {
   data () {
     return {
@@ -81,33 +82,47 @@ export default {
           this.$message.warning('错误，请重新输入')
           return
         }
-        // const { data: res } = await this.$http.post('login', this.loginForm)
-        // if (res.meta.status !== 200) return this.$message.error('登录失败')
-        console.log('通过验证')
-        this.$message.success('登录成功')
-        // window.sessionStorage.setItem('token', res.data.token)
-        // 跳转对应人员的页面
-        if (this.loginForm.userType === '1') {
-          window.sessionStorage.setItem('user', JSON.stringify({
-            userType: this.loginForm.userType,
-            username: this.loginForm.username
-          }))
-          this.$router.push({
-            path: '/student'
-          })
-        } else if (this.loginForm.userType === '2') {
-          window.sessionStorage.setItem('user', JSON.stringify({
-            userType: this.loginForm.userType,
-            username: this.loginForm.username
-          }))
-          this.$router.push('/student')
-        } else {
-          window.sessionStorage.setItem('user', JSON.stringify({
-            userType: this.loginForm.userType,
-            username: this.loginForm.username
-          }))
-          this.$router.push('/admin')
-        }
+        // 向后端数据库验证信息
+        this.axios({
+          method: 'POST',
+          url: '/logincheck',
+          data: this.loginForm
+        }).then((res) => {
+          console.log(res.data.IsSuccess)
+          // 如果信息错误则返回false，重新输入
+          if(res.data.IsSuccess === 'false') {
+            this.$message.error('用户名或密码错误，请重新输入')
+            return
+          } else {
+            console.log('通过验证')
+            this.$message.success('登录成功')
+            // window.sessionStorage.setItem('token', res.data.token)
+            // 跳转对应人员的页面
+            if (this.loginForm.userType === '1') {
+              window.sessionStorage.setItem('user', JSON.stringify({
+                userType: this.loginForm.userType,
+                username: this.loginForm.username
+              }))
+              this.$router.push({
+                path: '/student'
+              })
+            } else if (this.loginForm.userType === '2') {
+              window.sessionStorage.setItem('user', JSON.stringify({
+                userType: this.loginForm.userType,
+                username: this.loginForm.username
+              }))
+              this.$router.push('/student')
+            } else {
+              window.sessionStorage.setItem('user', JSON.stringify({
+                userType: this.loginForm.userType,
+                username: this.loginForm.username
+              }))
+              this.$router.push('/admin')
+            }
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
       })
     }
   }

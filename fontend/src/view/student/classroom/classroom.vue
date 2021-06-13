@@ -1,4 +1,4 @@
-<template>
+<templateb>
   <div class="table-classic-wrapper">
     <Hints>
       <template slot="hintName">空教室查询</template>
@@ -63,7 +63,7 @@
       </el-table>
     </el-card>
   </div>
-</template>
+</templateb>
 
 <script>
 
@@ -84,12 +84,12 @@ export default {
       },
       // 时段选项信息
       classes: [
-        { value: '1', label: '一~二节' },
-        { value: '2', label: '三~四节' },
-        { value: '3', label: '五~六节' },
-        { value: '4', label: '七~八节' },
-        { value: '5', label: '九~十节' },
-        { value: '6', label: '十一~十二节' }
+        { value: 1, label: '一~二节' },
+        { value: 2, label: '三~四节' },
+        { value: 3, label: '五~六节' },
+        { value: 4, label: '七~八节' },
+        { value: 5, label: '九~十节' },
+        { value: 6, label: '十一~十二节' }
       ],
       tableData: [
 

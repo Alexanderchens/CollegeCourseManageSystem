@@ -58,7 +58,9 @@
       "no-mixed-spaces-and-tabs": "off",
       "no-sequences": "off",
       "brace-style": "off",
-      "eqeqeq": "off"
+      "eqeqeq": "off",
+      "keyword-spacing": "off",
+      "keyword-spacing": "off"
     }
   },
   "browserslist": [

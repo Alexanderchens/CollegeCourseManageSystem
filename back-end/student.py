@@ -118,10 +118,16 @@ def getcourselist(s_id, weeknumber):
 def show_selectable_course():
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    date = request.get_json()
-    find_str = "select * from lesson where status='选课中';"
+
+    find_str = "select c_id from lesson where status='选课中';"
     mcs.execute(find_str)
     courselist = list(mcs.fetchall())
+
+    result = []
+    for cid in courselist:
+        find_str = "select c.course_name,l.building,l.room_number " \
+                   "from course c join lesson l on c.c_id = l.c_id " \
+                   "join "
     return json.dumps({'courseList': courselist})
 
 
@@ -213,11 +219,9 @@ def check_time_free():
 # 已通过
 
 
-@app.route('/coursecondition', methods=['GET', 'POST'])
+@app.route('/coursecondition/<s_id>', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
-def coursecondition():
-    data = request.get_json()
-    s_id = data['s_id']
+def coursecondition(s_id):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
 
@@ -227,4 +231,5 @@ def coursecondition():
                     "join instructor i on c.i_id = i.i_id where s.s_id='%s'" % s_id
     mcs.execute(find_selected)
     result = list(mcs.fetchall())
-    
+
+    return json.dumps({'conditionlist': result})

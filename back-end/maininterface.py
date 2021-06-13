@@ -9,8 +9,8 @@ from flask_cors import cross_origin
 app = Flask(__name__)
 
 
-@app.route('/register', methods=['GET', 'POST'])
-def register(db, ids, password, name, user_class):
+def register(ids, password, name, user_class):
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
     if user_class == 1:
         find_str = "SELECT * FROM student WHERE s_id = '%s'" % ids
@@ -19,7 +19,8 @@ def register(db, ids, password, name, user_class):
         if data is None:
             exe_str = "INSERT INTO student(s_id, name, password) VALUES ('%s','%s','%s')" % (ids, name, password)
         else:
-            return json.dumps({'IsSuccess': 'false'})
+            db.close()
+            return False
     elif user_class == 2:
         find_str = "SELECT * FROM instructor WHERE i_id = '%s'" % ids
         mcs.execute(find_str)
@@ -27,7 +28,8 @@ def register(db, ids, password, name, user_class):
         if data is None:
             exe_str = "INSERT INTO instructor(i_id, name, password) VALUES ('%s','%s','%s')" % (ids, name, password)
         else:
-            return json.dumps({'IsSuccess': 'false'})
+            db.close()
+            return False
     elif user_class == 3:
         find_str = "SELECT * FROM system_manager WHERE m_id = '%s'" % ids
         mcs.execute(find_str)
@@ -35,11 +37,12 @@ def register(db, ids, password, name, user_class):
         if data is None:
             exe_str = "INSERT INTO system_manager(m_id, name, password) VALUES ('%s','%s','%s')" % (ids, name, password)
         else:
-            return json.dumps({'IsSuccess': 'false'})
+            db.close()
+            return False
     mcs.execute(exe_str)
     db.commit()
     db.close()
-    return json.dumps({'IsSuccess': 'true'})
+    return True
 
 
 # 调试示例
@@ -55,7 +58,7 @@ def register(db, ids, password, name, user_class):
 @app.route('/logincheck', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
 def logincheck():
-    db = pms.connect("localhost", "root", "root", "CollegeCourseManageSystem")
+    db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mycursor = db.cursor()
     data = request.get_json()
     ids = data['username']

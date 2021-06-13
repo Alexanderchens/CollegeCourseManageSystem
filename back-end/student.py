@@ -8,11 +8,18 @@ app = Flask(__name__)
 
 
 # 在待选课程中插入新的学生，根据c_id索
-@app.route('/')
+@app.route('/insertStudent')
 @cross_origin(supports_credentials=True)
-def insert_student(s_id, c_id, i_id, year, semester):
+def insert_student():
+    data = data = request.get_json()
+    s_id = data['s_id']
+    c_id = data['c_id']
+    i_id = data['i_id']
+    year = data['year']
+    semester = data['semester']
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+
     insert_str = "insert into student_pick(s_id,c_id,i_id,year,semester,status)values(%s,%s,%s,%s,%s,%s)"
     if check_time_free(s_id, c_id):
         try:
@@ -49,13 +56,16 @@ print(stulist)
 # 必修课按照班级分配，选修课按照学号分配
 # 先获取班级名字，然后获取必修课课程
 # 2.课表查询函数
-@app.route()
+@app.route('/getCourseList', methods=['GET', 'POST'])
 @cross_origin(supports_credentials=True)
-def getcourselist(student_id):
+def getcourselist():
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+    data = data = request.get_json()
+    s_id = data['s_id']
+
     # 根据学生id找出班级
-    find_class = "select class_name from student where s_id=%s;" % student_id
+    find_class = "select class_name from student where s_id=%s;" % s_id
     mcs.execute(find_class)
     dt = mcs.fetchone()
     class_name = str(dt[0])
@@ -74,7 +84,7 @@ def getcourselist(student_id):
         lesson.append(str(row[1]))
         # print(lesson)
         courselist.append(lesson)
-    find_optional_cid = "select c_id,i_id from student_pick where s_id='%s' and status='%s';" % (student_id, "已选上")
+    find_optional_cid = "select c_id,i_id from student_pick where s_id='%s' and status='%s';" % (s_id, "已选上")
     mcs.execute(find_optional_cid)
     c_id_list = list(mcs.fetchall())
     for tmp in c_id_list:
@@ -97,23 +107,23 @@ def getcourselist(student_id):
 # 要从lesson中查询，因为只有lesson中包含有上课时间段的信息
 # print(show_selectable_course())
 # 已验证通过
-@app.route('/')
+@app.route('/showSelectableCourse')
 @cross_origin(supports_credentials=True)
 def show_selectable_course():
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+    date = request.get_json()
     find_str = "select * from lesson where status='选课中';"
     mcs.execute(find_str)
     courselist = list(mcs.fetchall())
-    return courselist
+    return json.dumps({'courseList': courselist})
 
 
 # 根据时间段查找对应的课程列表
-@app.route('/')
-@cross_origin(supports_credentials=True)
 def find_time_courselist(weeknumber, weekday, time_slot_number):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+
     find_exe = "select c_id from coursetime where weeknumber=%s and weekday=%s and time_slot_number=%s" \
                % (weeknumber, weekday, time_slot_number)
     mcs.execute(find_exe)
@@ -127,6 +137,8 @@ def find_time_courselist(weeknumber, weekday, time_slot_number):
 def find_empty_classroomlist(course_list):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+    data = request.get_json()
+    course_list = data.course_list
     classroomlist = []
     for i in range(5):
         building = 'A'+str(i+1)
@@ -157,7 +169,8 @@ def find_time_empty_classroomlist(weeknumber, weekday, time_slot_number):
     data = request.get_json()
     weeknumber = data['weeknumber']
     weekday = data['weekday']
-    time_slot_number = data['time_slot_number']
+    time_slot_number = list(data['time_slot_number'])
+
     c_list = []
     for ti in time_slot_number:
         courselist = find_time_courselist(weeknumber, weekday, ti)

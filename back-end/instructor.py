@@ -1,7 +1,7 @@
 import json
 
 import pymysql as pms
-from flask import Flask
+from flask import Flask, request
 from flask_cors import cross_origin
 
 app = Flask(__name__)
@@ -42,9 +42,15 @@ def querystudentlist(c_id):
 # 老师挑选学生，前端返回该课程最终学生列表，插入数据库（已测试）
 @app.route('/')
 @cross_origin(supports_credentials=True)
-def confirmstudent(s_list, i_id, c_id):
+def confirmstudent():
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+
+    data = request.get_json()
+    s_list = data['s_list']
+    i_id = data['i_id']
+    c_id = data['c_id']
+
     update_str = "update student_pick set status = '已选上' where s_id ='%s' and i_id='%s' and c_id='%s'"
     for item in s_list:
         mcs.execute(update_str, (item, i_id, c_id))

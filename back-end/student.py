@@ -23,7 +23,7 @@ def insert_student():
     insert_str = "insert into student_pick(s_id,c_id,i_id,year,semester,status)values(%s,%s,%s,%s,%s,%s)"
     if check_time_free(s_id, c_id):
         try:
-            mcs.execute(insert_str, (s_id, c_id, i_id, year, semester, "未选上"))
+            mcs.execute(insert_str, (s_id, c_id, i_id, year, semester, "待筛选"))
             db.commit()
             print('插入成功')
             success = True
@@ -56,13 +56,11 @@ print(stulist)
 # 必修课按照班级分配，选修课按照学号分配
 # 先获取班级名字，然后获取必修课课程
 # 2.课表查询函数
-@app.route('/getCourseList', methods=['GET', 'POST'])
-@cross_origin(supports_credentials=True)
-def getcourselist():
+# @app.route('/getCourseList/<s_id>/<weeknumber>', methods=['GET', 'POST'])
+# @cross_origin(supports_credentials=True)
+def getcourselist(s_id, weeknumber):
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
-    data = data = request.get_json()
-    s_id = data['s_id']
 
     # 根据学生id找出班级
     find_class = "select class_name from student where s_id=%s;" % s_id
@@ -78,7 +76,10 @@ def getcourselist():
     courselist = []
     for row in c_id_and_i_id_list:
         cid = str(row[0])
-        find_compulsory = "select * from lesson where c_id='%s'" % cid
+        find_compulsory = "select building,room_number,course_name,weekday,time_slot_number" \
+                          " from lesson join course on " \
+                          "lesson.c_id = course.c_id join coursetime on course.c_id = coursetime.c_id " \
+                          "where c_id='%s'" % cid
         mcs.execute(find_compulsory)
         lesson = list(mcs.fetchone())
         lesson.append(str(row[1]))
@@ -90,15 +91,20 @@ def getcourselist():
     for tmp in c_id_list:
         cid = str(tmp[0])
         iid = str(tmp[1])
-        find_optional = "select * from lesson where c_id='%s';" % cid
+        find_optional = "select building,room_number,course_name,weekday,time_slot_number" \
+                        " from lesson join course c on lesson.c_id = c.c_id join coursetime on " \
+                        "c.c_id = coursetime.c_id where c_id='%s';" % cid
         mcs.execute(find_optional)
         lesson = list(mcs.fetchone())
         lesson.append(iid)
         courselist.append(lesson)
+    timetable = [[]*8]*7
+    for c in courselist:
+        timetable[int(c[3])][int(c[4])] = str(c[0])+str(c[1])+','+str(c[2])
     return courselist
 
 
-# dst = getcourselist('201930390029')
+# dst = getcourselist('201930390029', 1)
 # print(dst, '????')
 # 四舍五入算通过了
 
@@ -182,9 +188,12 @@ def find_time_empty_classroomlist(weeknumber, weekday, time_slot_number):
 # 查询对应课程是否与该学生所选课程有时间冲突
 @app.route('/')
 @cross_origin(supports_credentials=True)
-def check_time_free(s_id, c_id):
+def check_time_free():
     db = pms.connect(host='localhost', user='root', passwd='root', db='collegecoursemanagesystem', charset='utf8')
     mcs = db.cursor()
+    data = request.get_json()
+    s_id = data['s_id']
+    c_id = data['c_id']
     courselist = getcourselist(s_id)
     if len(courselist)!=0:
         slot_list = []
@@ -202,3 +211,10 @@ def check_time_free(s_id, c_id):
 
 # print(find_time_empty_classroomlist(1, 1, 1))
 # 已通过
+
+
+@app.route('/coursecondition',methods=['GET','POST'])
+@cross_origin(supports_credentials=True)
+def coursecondition():
+    data = request.get_json()
+    s_id = data['s_id']
